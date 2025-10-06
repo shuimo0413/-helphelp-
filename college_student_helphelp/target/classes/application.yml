@@ -1,0 +1,56 @@
+#配置数据库连接
+spring:
+  application:
+    name: college_student_helphelp
+  #数据库的连接信息
+  datasource:
+    url: jdbc:mysql://localhost:3306/college_student_helphelp
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 1743355601
+
+  servlet:
+    multipart:
+      #      最大单个文件大小
+      max-file-size: 10MB
+      #      最大请求大小
+      max-request-size: 100MB
+
+  #设置redis
+  redis:
+    host: 127.0.0.1   # Redis 服务器地址
+    port: 6379        # Redis 端口
+    password: 123456   # 你的 Redis 密码
+    timeout: 5000     # 连接超时时间（毫秒）
+    lettuce:
+      pool:
+        max-active: 8 # 最大连接数
+        max-idle: 8   # 最大空闲连接
+        min-idle: 2   # 最小空闲连接
+
+
+#  # 添加会话相关配置
+#  session:
+#    cookie:
+#      name: JSESSIONID
+#      http-only: true  # 防止JS读取Cookie，增强安全性
+#      secure: false    # 开发环境设为false，生产环境应设为true（仅HTTPS）
+#    timeout: 1800      # 会话超时时间，单位秒（30分钟）
+# JWT配置
+
+
+
+#Mybatis的相关配置
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #    配置驼峰命名
+    map-underscore-to-camel-case: true
+
+# 开启事物管理
+logging:
+  level:
+    org.springframework.jdbc.support.JdbcTransactionManager: debug
+
+
+
