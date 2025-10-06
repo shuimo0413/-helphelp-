@@ -1,0 +1,37 @@
+#clock-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    left: 600px;
+    top: -50px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 6px 6px 2px #FED8B1;
+    margin-bottom: 20px;
+    width: 280px;
+    height: 110px;
+    font-size: 25px;
+    color:#7AA1D2;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* 文字阴影 */
+    background-image: linear-gradient(to bottom, #ffffff, #f0f0f0); /* 背景渐变 */
+  }
+  
+  #clock {
+    font-size: 2em;
+    color: #7AA1D2;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 0px rgba(236, 174, 174, 0.8); /* 添加立体效果的文字阴影 */
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  }
+  
+    #info {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    #date {
+      font-size: 1em;
+      color: #666;
+      margin-bottom: 5px;     
+    }

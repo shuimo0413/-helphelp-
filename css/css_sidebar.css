@@ -1,0 +1,113 @@
+#sidebar {
+  height: 830px;
+  /* 脱离文档 */
+  position: fixed;
+  width: 200px;
+  background-color: #272d35;
+  padding: 20px;
+  z-index: 2;
+  text-align: center;
+  /* 加上垂直滚动条 */
+  /* overflow-y: auto; 确保垂直滚动条只在内容超出时出现 */
+  left: 20px;
+  top: 2.5%;
+  border-radius: 10px;
+  background-color:#242626;
+  backdrop-filter: blur(2px); /* 应用毛玻璃效果 */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* 添加外边框阴影 */
+  
+}
+
+#sidebar a {
+  display: block;
+  padding: 10px;
+  color: #010101;
+  margin-top: 0px;
+  background-image: linear-gradient(to right, transparent, #B5C4DE); 
+  height: 40px;
+  background-size: 0% 100%; /* 初始宽度为0 */
+  background-repeat: no-repeat;
+  transition: background-size 0.5s, color 0.5s; 
+  border-radius: 0px;
+  line-height: 40px; /* 设置行高与高度相同，实现垂直居中 */
+}
+
+#sidebar a:hover {
+  /* 鼠标悬停时，渐变宽度变为100% */
+  background-size: 100% 100%;
+  /* background-image: linear-gradient(to right, transparent, #3881ff); */
+  color: #000000;
+}
+
+#sidebar a:not(:hover) {
+  transition: background-size 1s, color 1s; 
+}
+
+
+
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-200px); /* 初始位置在上方，稍微偏上 */
+  }
+  to {
+    opacity: 0.8;
+    transform: translateY(20px); /* 结束位置在原位置，可见 */
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0.8;
+    transform: translateY(20px); /* 初始位置在原位置，可见 */
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-200px); /* 结束位置在上方，稍微偏上 */
+  }
+}
+
+
+
+
+
+ .switch{
+  background: #fbca1f;
+  font-family: inherit;
+  padding: 0.6em 0.6em;
+  font-weight: 900;
+  font-size: 15px;
+  border: 3px solid black;
+  border-radius: 0.4em;
+  box-shadow: 0.1em 0.1em;
+  cursor: pointer;
+  overflow: hidden;
+  /* height: 5%; */
+  /* width: 100%; */
+} 
+
+.switch:hover {
+  transform: translate(-0.05em, -0.05em);
+  box-shadow: 0.15em 0.15em;
+
+}
+
+.switch:active {
+  transform: translate(0.05em, 0.05em);
+  box-shadow: 0.05em 0.05em;
+}
+
+#right_sidebar{
+  height: 50px;
+  width: 50px;
+  position: fixed;
+  right: 20px;
+  bottom: 100px;
+  z-index: 1000;
+  background-color: #B5C4DE;
+  cursor: pointer;
+}
+
+
+

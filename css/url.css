@@ -1,0 +1,166 @@
+/* 白天模式 */
+.day-mode {
+  background-color: white;
+  color: black;
+}
+
+.day-mode .url{
+  background-color: white; /* 白天模式背景颜色 */
+}
+
+.day-mode .url_text,
+.day-mode .url_title,
+.day-mode .url_title b {
+  color: black; /* 白天模式文字颜色 */
+}
+
+.day-mode .subject {
+  border-bottom: 2px solid black; /* 白天模式边框颜色 */
+}
+
+/* 夜间模式 */
+.night-mode {
+  background-color: black;
+  color: white;
+}
+
+.night-mode .url {
+  background-color: #494949; /* 夜间模式背景颜色 */
+}
+
+.night-mode .url_text,
+.night-mode .url_title,
+.night-mode .url_title b {
+  color: white; /* 夜间模式文字颜色 */
+}
+
+.night-mode .subject {
+  border-bottom: 2px solid #ffffff; /* 夜间模式边框颜色 */
+}
+
+/* 高亮样式 */
+.highlight {
+  background-color: orange !important; /* 高亮为橙色 */
+  color: black !important; /* 高亮时文字颜色 */
+}
+
+.highlight .url_text,
+.highlight .url_title,
+.highlight .url_title b {
+  color: black !important; /* 高亮时文字颜色 */
+}
+
+/* 原有样式保持不变 */
+.url_frame {
+  box-shadow:
+    inset -5px -5px 10px rgba(255, 255, 255, 0.2),
+    inset 5px 5px 10px rgba(0, 0, 0, 0.4),
+    inset -5px 5px 10px rgba(0, 0, 0, 0.2),
+    inset 5px -5px 10px rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  left: 3%;
+  position: relative;
+  width: 94%;
+  display: flex;
+  flex-wrap: wrap;
+  backdrop-filter: blur(2px);
+  gap: 10px;
+  padding: 10px;
+  transition: all 0.5s ease;
+}
+
+.url {
+  width: calc(25% - 10px);
+  height: 80px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+
+.url:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  transform: translateY(-8px);
+}
+
+.url .ico_frame {
+  margin-right: 15px;
+}
+
+.url_text {
+  margin-top: -15px;
+  width: calc(100% - 20px);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.ico_frame {
+  height: 40px;
+  width: 50px;
+  margin-left: 20px;
+}
+
+.ico_frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.subject {
+  width: auto;
+  padding: 0;
+}
+
+    /* 收藏按钮样式优化 - 不影响原有布局 */
+    .url_text {
+        /* 确保文本区域有足够空间容纳按钮 */
+        box-sizing: border-box;
+    }
+
+    .collect-btn {
+        position: absolute;
+        top: 10px; /* 与顶部保持适当距离 */
+        right: 0;  /* 靠右对齐但不超出文本区域 */
+        width: 24px;
+        height: 24px;
+        background: transparent; /* 透明背景，不干扰内容 */
+        border: none;
+        padding: 0;
+        margin: 0;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        z-index: 5; /* 保持在文本上方但不遮挡交互 */
+    }
+
+    /* 未收藏状态 */
+    .collect-btn:not(.collected) {
+        color: #bbb;
+        opacity: 0.7;
+    }
+
+    /* 已收藏状态 - 使用主题金色 */
+    .collect-btn.collected {
+        color: #F2C230;
+        opacity: 1;
+    }
+
+    /* 悬停效果 - 只在交互时突出显示 */
+    .collect-btn:hover {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+
+    /* 确保链接和文本不受按钮影响 */
+    .url_text a, .url_text span {
+        position: relative;
+        z-index: 1;
+    }

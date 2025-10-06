@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修改个人信息</title>
+    <link rel="stylesheet" href="css/css.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.8/dist/axios.min.js"></script>
+</head>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background-color: #F2F2F2; /* 灰白色背景 */
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    #app {
+        background-color: white;
+        width: 100%;
+        max-width: 450px;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        color: #F2C230; /* 金色标题 */
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: 600;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #F2F2F2;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 15px;
+    }
+
+    td {
+        padding: 8px 0;
+    }
+
+    td:first-child {
+        font-weight: 500;
+        color: #333;
+        width: 35%;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: #F2C230; /* 金色焦点边框 */
+        box-shadow: 0 0 0 2px rgba(242, 194, 48, 0.2);
+    }
+
+    button {
+        background-color: #F2C230; /* 金色按钮 */
+        color: #333;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #e6b31c; /* 深一点的金色 */
+        transform: translateY(-2px);
+    }
+
+    .msg {
+        color: #ff4d4f; /* 错误信息红色 */
+        font-size: 14px;
+        text-align: left;
+        padding-left: 10px;
+    }
+
+    .success {
+        color: #52c41a; /* 成功信息绿色 */
+    }
+</style>
+
+<body>
+    <!-- 顶部导航栏 -->
+    <nav style="background-color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 0 20px; position: fixed; top: 0; left: 0; right: 0; z-index: 100;">
+        <div style="max-width: 1200px; margin: 0 auto; height: 60px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="font-size: 18px; font-weight: 600;"><a href="index.html" style="text-decoration: none; color: #F2C230;">返回首页</a></div>
+            <div style="display: flex; gap: 30px;">
+                <a href="favourite.html" style="color: #666; text-decoration: none; font-weight: 500;">我的收藏</a>
+                <a href="changePersonal.html" style="color: #F2C230; text-decoration: none; font-weight: 500;">修改信息</a>
+                <a href="feedback.html" style="color: #666; text-decoration: none; font-weight: 500;">用户反馈</a>
+            </div>
+        </div>
+    </nav>
+    <!-- 用于抵消固定导航栏的高度 -->
+    <div style="height: 60px;"></div>
+
+    <div id="app">
+        <form action="">
+            <table>
+                <h1>用户信息</h1>
+                <tr>
+                    <td>用户名设置</td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="text" v-model="username" placeholder="请输入用户名"></td>
+                </tr>
+                <tr>
+                    <td>修改密码</td>
+                </tr>               
+                <tr>
+                    <td colspan="2"><input type="password" placeholder="请输入新密码" v-model="newPassword1"></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="password" placeholder="请确认新密码" v-model="newPassword2"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <button @click="changePassword" type="button">确认</button>
+                    </td>
+                    <!-- 返回的错误或者成功信息 -->
+                    <td :class="{msg: true, success: msg === '账号名或密码修改成功'}">{{msg}}</td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</body>
+    <script>
+
+        axios.interceptors.request.use(
+        (config) => {
+            const token = localStorage.getItem("token");
+            if (token) {
+            config.headers["Authorization"] = `Bearer ${token}`;
+            }else{
+                window.location.href = 'login.html';
+            }
+            return config;
+        },
+        (error) => {
+            window.location.href = 'login.html';
+            return Promise.reject(error);
+        }
+        );
+
+        const { createApp, ref, onMounted } = Vue;
+        createApp({
+            setup(){
+
+                const newPassword1 = ref("")
+                const newPassword2 = ref("")
+                const username = ref("")
+                const userData = ref({})
+                const msg = ref("")
+                let User = ''
+
+                const getUserDataByToken = async () =>{
+                    try{
+                        User = await axios.get("http://localhost:8080/api/userInfo")
+                        console.log(User.data.data)
+                        console.log(User.data.data.username)
+                        username.value = User.data.data.username;
+
+                    }catch(err){
+                        console.log("出错了{}",err)
+                    }
+                };
+
+                const changePassword = async () => {
+
+                    msg.value = ''
+                    try{
+                        console.log(username.value)
+                        if (username.value.trim() == "") {
+                            msg.value = "用户名不能为空"
+                            return
+                        }
+                        if (newPassword1.value.trim() === "" || newPassword2.value.trim() === "") {
+                            msg.value = "密码不能为空"
+                            return
+                        }
+                        if(newPassword1.value.trim() != newPassword2.value.trim() ){
+                            msg.value = "密码必须一致"
+                            return
+                        }
+                        const result = await axios.post("http://localhost:8080/api/changeUserMessage",{
+                            id : User.data.data.id,
+                            username: username.value,
+                            password: newPassword1.value
+                        })
+                        msg.value = "账号名或密码修改成功"
+
+                    }catch(err){
+                        console.error("出错了{}",err)
+                        msg.value = "修改失败，请重试"
+                    }
+                }
+
+                onMounted(getUserDataByToken)
+                return{
+                    username,
+                    newPassword1,
+                    newPassword2,
+                    msg,
+                    changePassword
+                }
+
+            }
+        }).mount("#app")
+
+    </script>
+
+</body>
+</html>

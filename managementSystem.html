@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据管理系统</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        /* 基础变量 - 保留原有配色 */
+        :root {
+            --primary: #F2C230;
+            --primary-dark: #e0b020;
+            --secondary: #4A6FA5;
+            --secondary-dark: #3a5a8c;
+            --light-bg: #F8F9FA;
+            --white: #FFFFFF;
+            --gray-light: #E1E1E1;
+            --gray: #666666;
+            --gray-dark: #333333;
+            --danger: #dc3545;
+            --danger-dark: #bb2d3b;
+            --success: #28a745;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.12);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        /* 基础重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--gray-dark);
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 100%; 
+            height: 100%; 
+            --color: #E1E1E1; /* 定义一个自定义属性用于渐变 */
+            background-color: #F3F3F3; 
+            background-image: 
+                linear-gradient(0deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%, transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%),
+                linear-gradient(90deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%, transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%);
+            background-size: 55px 55px;
+            background-position: center; /* 背景图片居中显示 */
+            background-attachment: fixed; 
+        
+        }
+
+        /* 布局组件 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 头部导航 */
+        .header {
+            background-color: var(--primary);
+            padding: 15px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--white);
+        }
+
+        /* 主内容区 */
+        .main {
+            padding: 30px 0;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 卡片组件 */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-title {
+            color: var(--secondary);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* 表单元素 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: var(--transition);
+            background-color: var(--white);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(242, 194, 48, 0.2);
+        }
+
+        /* 按钮样式 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger-dark);
+        }
+
+        /* 表格样式 */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .data-table th {
+            background-color: var(--secondary);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .data-table tr:hover {
+            background-color: rgba(74, 111, 165, 0.05);
+        }
+
+        /* 分页控件 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .page-info {
+            color: var(--gray);
+        }
+
+        /* 消息提示 */
+        .message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            text-align: center;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .message.success {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .message.error {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        /* 进度指示器 */
+        .progress-text {
+            text-align: center;
+            margin-top: 12px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* 图片预览 */
+        .image-preview {
+            margin-top: 12px;
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .image-preview.show {
+            display: block;
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 快速插入表单 */
+        .quick-insert {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+            align-items: end;
+        }
+
+
+
+        .action-buttons .btn {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .quick-insert {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo"><a href="index.html" style="color: var(--white); text-decoration: none;">返回首页</a></div>
+            <div class="logo">数据管理系统</div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main">
+        <div class="container">
+            <div class="dashboard" id="app">
+                <!-- 添加数据表单 -->
+                <section class="card form-card">
+                    <h2 class="card-title">添加Url数据</h2>
+                    
+                    <div v-if="message" :class="['message', message.type]">{{ message.text }}</div>
+                    <div class="progress-text" v-if="progressMessage">{{ progressMessage }}</div>
+                    
+                    <form @submit.prevent="handleSubmit">
+                        <div class="form-group">
+                            <label for="tableName">所在表名 <span style="color: var(--danger);">*</span></label>
+                            <select 
+                                id="tableName" 
+                                v-model="formData.tableName"
+                                required
+                            >
+                                <option value="">--请选择表--</option>
+                                <option v-for="table in tableNameList" :key="table" :value="table">
+                                    {{ table }}
+                                </option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="name">名称 <span style="color: var(--danger);">*</span></label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                v-model="formData.name"
+                                required
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="url">Url链接 <span style="color: var(--danger);">*</span></label>
+                            <input 
+                                type="url" 
+                                id="url" 
+                                v-model="formData.url"
+                                required
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="information">描述信息</label>
+                            <textarea 
+                                id="information" 
+                                rows="3"
+                                v-model="formData.information"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="image">附加图片</label>
+                            <input 
+                                type="file" 
+                                id="image" 
+                                accept="image/*" 
+                                @change="handleImageChange"
+                            >
+                            <img 
+                                class="image-preview" 
+                                :class="{show: formData.imagePreview}"
+                                :src="formData.imagePreview" 
+                                alt="图片预览"
+                            >
+                        </div>
+                        
+                        <button type="submit" class="btn" :disabled="isSubmitting">
+                            <span class="loading" v-if="isSubmitting"></span>
+                            <span v-if="isSubmitting">提交中...</span>
+                            <span v-else>提交</span>
+                        </button>
+                    </form>
+                </section>
+
+                <!-- 数据管理表格 -->
+                <section class="card table-card">
+                    <h2 class="card-title">数据管理</h2>
+                    
+                    <div class="form-group">
+                        <select v-model="selectedTable" @change="getData">
+                            <option v-for="table in tableNameList" :key="table" :value="table">{{ table }}</option>
+                        </select>
+                    </div>
+                    
+                    <div class="quick-insert">
+                        <div>
+                            <input type="text" placeholder="名称" v-model="quickInsert.name">
+                        </div>
+                        <div>
+                            <input type="text" placeholder="图片URL" v-model="quickInsert.iconUrl">
+                        </div>
+                        <div>
+                            <input type="text" placeholder="链接URL" v-model="quickInsert.url">
+                        </div>
+                        <div>
+                            <input type="text" placeholder="描述" v-model="quickInsert.information">
+                        </div>
+                        <div>
+                            <button class="btn btn-secondary" @click="handleQuickInsert">快速插入</button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>名称</th>
+                                    <th>图片</th>
+                                    <th>链接</th>
+                                    <th>描述</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in paginatedData" :key="item.id || item.name">
+                                    <td>{{ item.name }}</td>
+                                    <td>
+                                        <div v-if="item.iconUrl" style="width: 80px; height: 40px; overflow: hidden; ">
+                                            <a :href="item.iconUrl" target="_blank" >查看图片</a>
+                                        </div>
+                                        <div v-else>无</div>
+                                    </td>
+                                    <td>
+                                        <a :href="item.url" target="_blank">{{ item.url }}</a>
+                                    </td>
+                                    <td >{{ item.information || '无' }}</td>
+                                    <td class="action-buttons">
+                                        <button class="btn btn-secondary" @click="editItem(item)">编辑</button>
+                                        <button class="btn btn-danger" @click="deleteItem(item)">删除</button>
+                                    </td>
+                                </tr>
+                                <tr v-if="dataList.length === 0">
+                                    <td colspan="5" style="text-align: center; padding: 20px;">
+                                        暂无数据
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="pagination">
+                        <button class="btn" @click="previousPage" :disabled="currentPage <= 1">上一页</button>
+                        <span class="page-info">
+                            第 {{ currentPage }} 页，共 {{ totalPages }} 页，总计 {{ dataList.length }} 条数据
+                        </span>
+                        <button class="btn" @click="nextPage" :disabled="currentPage >= totalPages">下一页</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script>
+
+        axios.interceptors.request.use(
+        (config) => {
+            const token = localStorage.getItem("token");
+            if (token) {
+            config.headers["Authorization"] = `Bearer ${token}`;
+            }else{
+                window.location.href = 'login.html';
+            }
+            return config;
+        },
+        (error) => {
+            window.location.href = 'login.html';
+            return Promise.reject(error);
+        }
+        );
+
+
+
+
+        const { createApp } = Vue;
+        
+        createApp({
+            data() {
+                return {
+                    // 表名列表
+                    tableNameList: [
+                        "common_software",
+                        "competition_information",
+                        "domestic_academic_resources",
+                        "exam_information",
+                        "foreign_academic_resources",
+                        "graduate_student_information",
+                        "life_tool",
+                        "practice_information",
+                    ],
+                    
+                    // 添加表单数据
+                    formData: {
+                        tableName: "",
+                        name: "",
+                        url: "",
+                        information: "",
+                        image: null,
+                        imagePreview: ""
+                    },
+                    
+                    // 快速插入数据
+                    quickInsert: {
+                        name: "",
+                        iconUrl: "",
+                        url: "",
+                        information: ""
+                    },
+                    
+                    // 状态信息
+                    isSubmitting: false,
+                    message: null,
+                    progressMessage: "",
+                    
+                    // 数据管理
+                    selectedTable: "common_software",
+                    dataList: [],
+                    currentPage: 1,
+                    pageSize: 10
+                }
+            },
+            computed: {
+                // 分页数据
+                paginatedData() {
+                    const start = (this.currentPage - 1) * this.pageSize;
+                    return this.dataList.slice(start, start + this.pageSize);
+                },
+                
+                // 总页数
+                totalPages() {
+                    return Math.ceil(this.dataList.length / this.pageSize) || 1;
+                }
+            },
+            mounted() {
+                this.getData();
+                this.setupAxiosInterceptors();
+            },
+            methods: {
+                // 设置Axios拦截器
+                setupAxiosInterceptors() {
+                    axios.interceptors.request.use(
+                        (config) => {
+                            const token = localStorage.getItem("token");
+                            if (token) {
+                                config.headers["Authorization"] = `Bearer ${token}`;
+                            }
+                            return config;
+                        },
+                        (error) => {
+                            return Promise.reject(error);
+                        }
+                    );
+                },
+                
+                // 显示消息提示
+                showMessage(text, type = 'success') {
+                    this.message = { text, type };
+                    setTimeout(() => {
+                        this.message = null;
+                    }, 3000);
+                },
+                
+                // 处理图片选择和预览
+                handleImageChange(e) {
+                    const file = e.target.files[0];
+                    if (!file) {
+                        this.formData.image = null;
+                        this.formData.imagePreview = "";
+                        return;
+                    }
+
+                    // 验证文件类型
+                    if (!file.type.startsWith('image/')) {
+                        this.showMessage("请选择图片文件", 'error');
+                        this.formData.image = null;
+                        this.formData.imagePreview = "";
+                        return;
+                    }
+                    
+                    // 验证文件大小 (5MB以内)
+                    if (file.size > 5 * 1024 * 1024) {
+                        this.showMessage("图片大小不能超过5MB", 'error');
+                        this.formData.image = null;
+                        this.formData.imagePreview = "";
+                        return;
+                    }
+                    
+                    // 存储文件并生成预览
+                    this.formData.image = file;
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.formData.imagePreview = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                },
+                
+                // 验证URL格式
+                isValidUrl(url) {
+                    try {
+                        new URL(url);
+                        return true;
+                    } catch (e) {
+                        return false;
+                    }
+                },
+                
+                // 提交图片到图片接口
+                async submitImage(urlId,tableName) {
+                    if (!this.formData.image) {
+                        return true;
+                    }
+
+                    // 表名对应的文件夹
+                    const folder = {
+                        "common_software": "常用软件",
+                        "competition_information": "竞赛信息",
+                        "domestic_academic_resources": "学术资源",
+                        "exam_information": "考公考证",
+                        "foreign_academic_resources": "学术资源",
+                        "graduate_student_information": "考研报名",
+                        "life_tool": "工具网址",
+                        "practice_information": "就业实习",
+                    }
+
+                        // const formData = new FormData();
+
+                    this.progressMessage = "正在上传图片...";
+                    
+                    try {
+                        const formData = new FormData();
+                        formData.append('image', this.formData.image);
+                        formData.append('path', folder[tableName]);
+                        // console.log(formData);
+                        
+                        const response = await axios.post('http://localhost:8080/api/addUrlImage', formData, {
+                            headers: { 'Content-Type': 'multipart/form-data' },
+                            onUploadProgress: (progressEvent) => {
+                                const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                                this.progressMessage = `正在上传图片: ${percent}%`;
+                            }
+                        });
+                        
+                        return response.data.code === 1;
+                    } catch (error) {
+                        console.error('图片上传错误:', error);
+                        this.showMessage('图片上传失败: ' + (error.response?.data?.msg || error.message || '网络错误'), 'error');
+                        return false;
+                    }
+                },
+                
+                // 提交表单数据
+                async handleSubmit() {
+                    // 简单验证
+                    if (!this.formData.tableName || !this.formData.name || !this.formData.url) {
+                        this.showMessage("请填写必填字段", 'error');
+                        return;
+                    }
+                    
+                    if (!this.isValidUrl(this.formData.url)) {
+                        this.showMessage("请输入有效的URL格式", 'error');
+                        return;
+                    }
+                    
+                    this.isSubmitting = true;
+                    this.progressMessage = "正在提交基本信息...";
+                    
+                    // 还是他妈的文件夹
+                    const folder = {
+                        "common_software": "常用软件",
+                        "competition_information": "竞赛信息",
+                        "domestic_academic_resources": "学术资源",
+                        "exam_information": "考公考证",
+                        "foreign_academic_resources": "学术资源",
+                        "graduate_student_information": "考研报名",
+                        "life_tool": "工具网址",
+                        "practice_information": "就业实习",
+                    }
+
+                    // 获取文件名字
+
+                    try {
+                        // 提交基本信息
+                        let iconUrl = folder[this.formData.tableName] + "/" + this.formData.image.name;
+                        const response = await axios.post('http://localhost:8080/api/addUrl', {
+                            tableName: this.formData.tableName,
+                            name: this.formData.name,
+                            url: this.formData.url,
+                            information: this.formData.information || '',
+                            iconUrl : iconUrl,
+                        });
+                        
+                        if (response.data.code !== 1) {
+                            this.showMessage('基本信息提交失败: ' + (response.data.msg || '未知错误'), 'error');
+                            return;
+                        }
+                        
+                        // 提交图片
+                        const urlId = response.data.data;
+                        const imageSuccess = await this.submitImage(urlId,this.formData.tableName);
+                        
+                        if (imageSuccess) {
+                            this.showMessage("所有数据提交成功！");
+                            this.progressMessage = "";
+                            this.resetForm();
+                            // 如果当前选中的表和提交的表一致，刷新数据
+                            if (this.selectedTable === this.formData.tableName) {
+                                this.getData();
+                            }
+                        } else {
+                            this.progressMessage = "";
+                            this.showMessage("基本信息已保存，但图片上传失败");
+                        }
+                    } catch (error) {
+                        console.error('基本信息提交错误:', error);
+                        this.showMessage('基本信息提交失败: ' + (error.response?.data?.msg || error.message || '网络错误'), 'error');
+                        this.progressMessage = "";
+                    } finally {
+                        this.isSubmitting = false;
+                    }
+                },
+                
+                // 重置表单
+                resetForm() {
+                    this.formData = {
+                        tableName: "",
+                        name: "",
+                        url: "",
+                        information: "",
+                        image: null,
+                        imagePreview: ""
+                    };
+                    document.getElementById('image').value = "";
+                },
+                
+                // 获取数据
+                getData() {
+                    const url = `http://localhost:8080/api/${this.selectedTable}`;
+                    
+                    axios.get(url)
+                        .then((res) => {
+                            if (res.data.code === 1) {
+                                this.dataList = res.data.data || [];
+                                this.currentPage = 1; // 重置到第一页
+                            } else {
+                                this.showMessage(res.data.msg || '获取数据失败', 'error');
+                                this.dataList = [];
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('获取数据错误:', error);
+                            this.showMessage('获取数据失败: ' + (error.message || '网络错误'), 'error');
+                            this.dataList = [];
+                        });
+                },
+                
+                // 上一页
+                previousPage() {
+                    if (this.currentPage > 1) {
+                        this.currentPage--;
+                    }
+                },
+                
+                // 下一页
+                nextPage() {
+                    if (this.currentPage < this.totalPages) {
+                        this.currentPage++;
+                    }
+                },
+                
+                // 删除数据
+                deleteItem(item) {
+                    if (!confirm(`确定要删除 ${item.name} 吗？`)) {
+                        return;
+                    }
+                    
+                    const deleteData = {
+                        tableName: this.selectedTable,
+                        id: item.id,
+                        name: item.name
+                    };
+                    
+                    axios.post("http://localhost:8080/api/deleteUrl", deleteData)
+                        .then((res) => {
+                            if (res.data.code === 1) {
+                                this.showMessage("删除成功");
+                                this.getData(); // 重新获取数据
+                            } else {
+                                this.showMessage(res.data.msg || '删除失败', 'error');
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('删除错误:', error);
+                            this.showMessage('删除失败: ' + (error.message || '网络错误'), 'error');
+                        });
+                },
+                
+                // 编辑数据（将数据填充到表单）
+                editItem(item) {
+                    this.formData = {
+                        tableName: this.selectedTable,
+                        name: item.name,
+                        url: item.url,
+                        information: item.information || '',
+                        image: null,
+                        imagePreview: item.iconUrl || ''
+                    };
+                    
+                    // 滚动到表单
+                    document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
+                },
+                
+                // 快速插入
+                handleQuickInsert() {
+                    if (!this.quickInsert.name || !this.quickInsert.url) {
+                        this.showMessage("名称和URL为必填项", 'error');
+                        return;
+                    }
+                    
+                    if (!this.isValidUrl(this.quickInsert.url)) {
+                        this.showMessage("请输入有效的URL格式", 'error');
+                        return;
+                    }
+                    
+                    this.isSubmitting = true;
+                    
+                    axios.post('http://localhost:8080/api/addUrl', {
+                        tableName: this.selectedTable,
+                        name: this.quickInsert.name,
+                        url: this.quickInsert.url,
+                        information: this.quickInsert.information || ''
+                    })
+                    .then((res) => {
+                        if (res.data.code === 1) {
+                            this.showMessage("快速插入成功");
+                            this.quickInsert = {
+                                name: "",
+                                iconUrl: "",
+                                url: "",
+                                information: ""
+                            };
+                            this.getData(); // 刷新数据
+                        } else {
+                            this.showMessage(res.data.msg || '插入失败', 'error');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('快速插入错误:', error);
+                        this.showMessage('插入失败: ' + (error.message || '网络错误'), 'error');
+                    })
+                    .finally(() => {
+                        this.isSubmitting = false;
+                    });
+                }
+            }
+        }).mount('#app');
+
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+#top {
+    overflow: hidden;
+    width: 80%;
+    height: 60px;
+    margin-top: 20px;
+    border-radius: 20px;
+    position: fixed;
+    z-index: 3;
+    margin-left: 280px;
+    cursor: pointer;
+    background-color: white;
+    border: 1px solid #ccc;
+    display: flex; /* 使用 flexbox 布局 */
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    transition: top 0.3s;
+    /* z-index: 1000; */
+    top :0;
+}
+  #top.hidden {
+    top: -100%; /* 可以根据实际高度调整 */
+  }
+
+.top_bottom {
+    float: left;
+    width: 50px;
+    margin-right: 50px;
+    height: 50px;
+    /* overflow: hidden; */
+}
+
+.top_bottom:hover {
+    animation: jump 0.8s forwards;
+}
+
+#menu {
+    /* 设置在盒子内 */
+    position: relative;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+}
+
+#qq_mall {
+    border-radius: 10px;
+    position: relative;
+    left: 85%;
+    cursor: pointer;
+}
+
+@keyframes jump {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.top_li {
+    color: #000;
+    position: relative;
+    font-size: 20px;
+    height: 60px;
+    width: 100%; /* 使用 auto 让宽度自适应内容 */
+    display: inline-block; /* 保持内联块元素 */
+    margin: 0 20px; /* 为元素之间留出空间 */
+}
+
+.top_text {
+    float: left;
+    height: 60px;
+    margin-left: 40px;
+    line-height: 60px;
+    cursor: pointer;
+    /* 加上黑色右边框 */
+  
+}
+
+/* top_text加上jump动画 */
+.top_li .top_text {
+    display: inline-block;
+    cursor: pointer;
+    position: relative; /* 添加相对定位，以便伪元素定位 */
+}
+
+.top_li .top_text::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: #000;
+    visibility: hidden; /* 初始状态下隐藏伪元素 */
+    transition: width 0.3s ease, left 0.3s ease, visibility 0s linear 0.3s; /* 添加过渡效果，延迟visibility的变化 */
+}
+
+.top_li .top_text:hover::before {
+    
+    width: 100%;
+    left: 0;
+    visibility: visible; /* 悬停时显示伪元素 */
+    transition-delay: 0s; /* 立即显示伪元素，移除延迟 */
+}

@@ -1,0 +1,89 @@
+#user_menu {
+    background-color: #F2F2F2;
+    left: 300px;
+    top: 100px;
+    position: absolute;
+    border-radius: 20px;
+    border: 10px solid #F2F2F2;
+    /* 初始隐藏 */
+    opacity: 0;
+    transform: translateY(-20px); /* 初始位置在上方 */
+    pointer-events: none; /* 隐藏时不可点击 */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* 动画过渡 */
+}
+
+#user_menu.active {
+    opacity: 1;
+    transform: translateY(0); /* 显示时回到原位 */
+    pointer-events: auto; /* 显示时可点击 */
+}
+
+/* 1. 菜单容器：主色背景+规整布局 */
+.user-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 320px;
+    padding: 22px 20px;
+    box-sizing: border-box;
+    background-color: #F2F2F2;
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    z-index: 999;
+}
+
+.user-menu__title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.user-menu__name {
+    color: #666;
+    font-weight: 700;
+    margin-left: 5px;
+}
+
+/* 退出按钮 */
+.user-menu__btn {
+    width: 80%;
+    padding: 10px 0;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.user-menu__btn:hover {
+    background-color: #555;
+    transform: scale(1.03);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-menu__btn:active {
+    transform: scale(0.98);
+}
+
+.user-menu__link {
+    color: #333;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.user-menu__link:hover {
+    color: #000;
+    text-decoration: underline;
+    background-color: #E6E6E6;
+}

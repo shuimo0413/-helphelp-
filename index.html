@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- 欢迎观赏屎山 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大学生help help网</title>
+<link rel="stylesheet" href="css/css.css">
+<link rel="stylesheet" href="css/css_sidebar.css">
+<link rel="stylesheet" href="css/css_content.css">
+<link rel="stylesheet" href="css/advertising.css">
+<link rel="stylesheet" href="css/url.css">
+<link rel="stylesheet" href="css/clock.css">
+<link rel="stylesheet" href="css/search.css">
+<link rel="stylesheet" href="css/top.css">
+<link rel="stylesheet" href="css/dark_and_light.css">
+<link rel="stylesheet" href="css/user.css">
+<!-- 调用外部js -->
+<script src="js.js"></script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@1.6.8/dist/axios.min.js"></script>
+
+<style>
+
+  #admin{
+    display: none;
+  }
+
+  ul{
+    padding-left: 0px;
+    list-style: none;
+  }
+  li{
+    list-style: none;
+  }
+  a{
+    text-decoration: none;
+    color: black;
+  }
+  #search{
+    border-radius: 10px;
+    width: 500px;
+    height: 50px;
+    border: 2px solid black;
+    top: 0px;
+    position: relative;
+    left: 0px;
+    text-indent: 50px;
+    font-size: 20px;
+  }
+  #search_frame{
+    left: 50%;
+    transform: translateX(-50%);
+    position: relative;
+    width: 600px;
+    height: 80px;
+    margin-top: 10px;
+    z-index: 2;
+  }
+.subject{
+  /* 加上底边框 */
+  border-bottom: 2px solid black;
+  margin-left: 3%;
+}
+
+  
+.left_bottom {
+  margin-bottom: 15px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  background: rgba(192, 192, 192, 0.2);
+  font-family: "Montserrat", sans-serif;
+  box-shadow: 0px 6px 24px 0px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  cursor: pointer;
+  border: none;
+}
+
+.left_bottom:after {
+  content: " ";
+  width: 0%;
+  height: 100%;
+  background: #ffffff;
+  position: absolute;
+  transition: all 0.4s ease-in-out;
+  right: 0;
+}
+
+.left_bottom:hover::after {
+  right: auto;
+  left: 0;
+  width: 100%;
+}
+
+.left_bottom span {
+  text-align: center;
+  text-decoration: none;
+  width: 140px;
+  padding: 16px 25px;
+  color: #F2C230;
+  font-size: 1.125em;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  z-index: 20;
+  transition: all 0.3s ease-in-out;
+}
+
+
+.left_bottom:hover span {
+  color: #000000;
+  animation: scaleUp 0.3s ease-in-out;
+}
+
+@keyframes scaleUp {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.95);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+
+</style>
+  
+</head>
+<body>
+
+
+<div id="trail-container"></div>
+    
+<div id="top"> 
+  
+  <div class="top_li">
+    <li class="top_bottom">
+      <img src="./img/menu.webp" id="menu">
+    </li>
+    <li class="top_text">联系我们</li>
+    <li class="top_text"><a href="feedback.html">反馈建议</a></li>
+    <!-- <li class="top_text">支持我们</li> -->
+    <li class="top_text" style="cursor: pointer;"><a href="favourite.html">我的收藏</a></li>
+    <!-- 需要检测用户是否有管理员权限 -->
+    <li class="top_text" style="cursor: pointer;" id="admin"><a href="managementSystem.html">后台管理</a></li>
+
+
+  </div>
+
+
+<!-- 调整白天黑夜的按钮 -->
+    <label class="theme" style="cursor: pointer;" onclick="toggleTheme()">
+      <span class="theme__toggle-wrap">
+        <input id="theme" class="theme__toggle" type="checkbox" role="switch" name="theme" value="dark">
+        <span class="theme__fill"></span>
+        <span class="theme__icon">
+          <span class="theme__icon-part"></span>
+          <span class="theme__icon-part"></span>
+          <span class="theme__icon-part"></span>
+          <span class="theme__icon-part"></span>
+          <span class="theme__icon-part"></span>
+          <span class="theme__icon-part"></span>
+          <span class="theme__icon-part"></span>
+          <span class="theme__icon-part"></span>
+          <span class="theme__icon-part"></span>
+        </span>
+      </span>
+    </label>
+
+</div>
+
+<div id = "right_sidebar" class="switch" onclick="return_top()">
+    <img src="./img/returntop.webp" width="100%">
+</div>
+
+<div id="sidebar">
+    <div><img src="./3b306077c61b3177f2a62cd9b674a4b.png" alt="" width="180px" style="border-radius: 10px;"></div>
+    <hr>
+    <br>
+    <button class="left_bottom" onclick="scrollToElement('subject1')"><span>常用软件</span></button>
+    <button class="left_bottom" onclick="scrollToElement('subject2')"><span>生活工具</span></button>
+    <button class="left_bottom" onclick="scrollToElement('subject3')"><span>电子书工具</span></button>
+    <button class="left_bottom" onclick="scrollToElement('subject4')"><span>考公考证升本</span></button>
+    <button class="left_bottom" onclick="scrollToElement('subject5')"><span>考研信息</span></button>
+    <button class="left_bottom" onclick="scrollToElement('subject6')"><span>就业实习</span></button>
+    <button class="left_bottom" onclick="scrollToElement('subject7')"><span>竞赛信息</span></button>
+    <button class="left_bottom" onclick="scrollToElement('subject8')"><span>学术资源国内</span></button>
+    <button class="left_bottom" onclick="scrollToElement('subject9')"><span>学术资源国外</span></button>
+    <button id="prevButton" class="switch" style="margin-right: 20px;"><span>上一结果</span></button>
+    <button id="nextButton" class="switch"><span>下一结果</span></button>
+
+    <!-- <button class="left_bottom"><span>政策咨询</span></button>
+    <button class="left_bottom"><span>社会实践</span></button> -->
+</div>
+
+<!-- 设置登录用户信息 -->
+
+<div id="user_menu" class="user-menu">
+  <h1 class="user-menu__title">
+    当前用户：<span id="user_name" class="user-menu__name"></span>
+  </h1>
+  <button onclick="logout()" id="logoutButton" class="user-menu__btn">退出登录</button>
+  <a href="changePersonal.html" class="user-menu__link">修改个人信息</a>
+</div>
+
+
+
+  <div class="content">   
+
+    <div id="search_frame">
+      <img src="./img/search.webp" width="30px" style="position: relative; left: 50px;z-index: 3;top: 10px; cursor: pointer;" id="searchButton">
+    <input type="text" id="search" placeholder="请输入关键词">
+
+    <!-- 钟表 -->
+    <div id="clock-container">
+      <div id="info">
+        <div id="date"></div>
+      </div>
+      
+      <div id="clock">
+        <span id="hours"> 00</span> : <span id="minutes">00 </span> : <span id="seconds">00 </span>
+      </div>
+    </div>
+    <!--  -->
+    </div>
+    <br><br>
+    <div id="advertising">
+      <div id="close_advertising" onclick="close_advertising()"><b>X</b></div>
+
+
+    </div>
+    <br><br><br><br>
+
+  <div id = "app">
+
+
+
+
+    <h1 class="subject" id="subject1">常用软件</h1>
+    <div class="url_frame" id="commonSoftware">
+        <div class="url" v-for="(software,index) in commonSoftwareList":key = "index">
+            <!-- 图标区域 -->
+            <div class="ico_frame" style="border-radius: 5px; overflow: hidden;">
+                <img :src="software.iconUrl" :alt="software.name + '图标'">
+            </div>
+            
+            <!-- 文本内容区域 - 包含收藏按钮但不影响布局 -->
+            <div class="url_text" style="position: relative; padding-right: 30px;">
+                <br>
+                <!-- 收藏按钮 - 绝对定位在文本区域右上角 -->
+                <button 
+                    class="collect-btn" 
+                    :class="{ 'collected': software.collected }"
+                    @click="toggleCollect(software)"
+                    :title="software.collected ? '取消收藏' : '收藏'"
+                >
+                    {{ software.collected ? '★' : '☆' }}
+                </button>
+                
+                <!-- 原有文本内容保持不变 -->
+                <font style="font-size: 20px;">
+                    <a :href="software.url" target="_blank"> <b>{{software.name}}</b></a>
+                </font><br>
+                <span>{{software.information}}</span>
+            </div>
+        </div>
+    </div>
+
+    <h1 class="subject" id ="subject2">生活工具</h1>
+    <div class="url_frame" id = "lifeTool">
+        <div class="url" v-for="(software,index) in lifeToolList":key = "index">
+            <div class="ico_frame" style="border-radius: 5px; overflow: hidden;">
+                <img :src=software.iconUrl>
+            </div>
+            <div class="url_text" style="position: relative; padding-right: 30px;">
+                <br>
+                <!-- 收藏按钮 - 绝对定位在文本区域右上角 -->
+                <button 
+                    class="collect-btn" 
+                    :class="{ 'collected': software.collected }"
+                    @click="toggleCollect(software)"
+                    :title="software.collected ? '取消收藏' : '收藏'"
+                >
+                    {{ software.collected ? '★' : '☆' }}
+                </button>
+                
+                <!-- 原有文本内容保持不变 -->
+                <font style="font-size: 20px;">
+                    <a :href="software.url" target="_blank"> <b>{{software.name}}</b></a>
+                </font><br>
+                <span>{{software.information}}</span>
+            </div>
+
+        </div>
+    </div>
+    
+    <h1 class="subject" id = "subject4">考公考证升本（专升本请在各省考试网报名）</h1>
+    <div class="url_frame" id="examInformation">
+        <div class="url" v-for="(software,index) in examInformationList" :key="index">
+            <div class="ico_frame" style="border-radius: 5px; overflow: hidden;">
+                <img :src="software.iconUrl">
+            </div>
+            <div class="url_text" style="position: relative; padding-right: 30px;">
+                <br>
+                <!-- 收藏按钮 -->
+                <button 
+                    class="collect-btn" 
+                    :class="{ 'collected': software.collected }"
+                    @click="toggleCollect(software)"
+                    :title="software.collected ? '取消收藏' : '收藏'"
+                >
+                    {{ software.collected ? '★' : '☆' }}
+                </button>
+
+                <font style="font-size: 20px;">
+                    <a :href="software.url" target="_blank"> <b>{{ software.name }}</b></a>
+                </font><br>
+                <span>{{ software.information }}</span>
+            </div>
+        </div>
+    </div>
+
+
+    <h1 class="subject" id = "subject5">考研信息</h1>
+    <div class="url_frame" id="graduateStudentInformation">
+        <div class="url" v-for="(software,index) in graduateStudentInformationList" :key="index">
+            <div class="ico_frame" style="border-radius: 5px; overflow: hidden;">
+                <img :src="software.iconUrl">
+            </div>
+            <div class="url_text" style="position: relative; padding-right: 30px;">
+                <br>
+                <!-- 收藏按钮 -->
+                <button 
+                    class="collect-btn" 
+                    :class="{ 'collected': software.collected }"
+                    @click="toggleCollect(software)"
+                    :title="software.collected ? '取消收藏' : '收藏'"
+                >
+                    {{ software.collected ? '★' : '☆' }}
+                </button>
+
+                <font style="font-size: 20px;">
+                    <a :href="software.url" target="_blank"> <b>{{ software.name }}</b></a>
+                </font><br>
+                <span>{{ software.information }}</span>
+            </div>
+        </div>
+    </div>
+
+
+    <h1 class="subject" id = "subject6">就业实习</h1>
+    <div class="url_frame" id="practiceInformation">
+        <div class="url" v-for="(software,index) in practiceInformationList" :key="index">
+            <div class="ico_frame" style="border-radius: 5px; overflow: hidden;">
+                <img :src="software.iconUrl">
+            </div>
+            <div class="url_text" style="position: relative; padding-right: 30px;">
+                <br>
+                <!-- 收藏按钮 -->
+                <button 
+                    class="collect-btn" 
+                    :class="{ 'collected': software.collected }"
+                    @click="toggleCollect(software)"
+                    :title="software.collected ? '取消收藏' : '收藏'"
+                >
+                    {{ software.collected ? '★' : '☆' }}
+                </button>
+
+                <font style="font-size: 20px;">
+                    <a :href="software.url" target="_blank"> <b>{{ software.name }}</b></a>
+                </font><br>
+                <span>{{ software.information }}</span>
+            </div>
+        </div>
+    </div>
+
+    <h1 class="subject" id = "subject7">竞赛信息</h1>
+    <div class="url_frame" id="competitionInformation">
+        <div class="url" v-for="(software,index) in competitionInformationList" :key="index">
+            <div class="ico_frame" style="border-radius: 5px; overflow: hidden;">
+                <img :src="software.iconUrl">
+            </div>
+            <div class="url_text" style="position: relative; padding-right: 30px;">
+                <br>
+                <!-- 收藏按钮 -->
+                <button 
+                    class="collect-btn" 
+                    :class="{ 'collected': software.collected }"
+                    @click="toggleCollect(software)"
+                    :title="software.collected ? '取消收藏' : '收藏'"
+                >
+                    {{ software.collected ? '★' : '☆' }}
+                </button>
+
+                <font style="font-size: 20px;">
+                    <a :href="software.url" target="_blank"> <b>{{ software.name }}</b></a>
+                </font><br>
+                <span>{{ software.information }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <h1 class="subject" id="subject8">学术资源（国内）</h1>
+    <div class="url_frame" id="domesticAcademicResources">
+        <div class="url" v-for="(software,index) in domesticAcademicResourcesList" :key="index">
+            <div class="ico_frame" style="border-radius: 5px; overflow: hidden;">
+                <img :src="software.iconUrl">
+            </div>
+            <div class="url_text" style="position: relative; padding-right: 30px;">
+                <br>
+                <!-- 收藏按钮 -->
+                <button 
+                    class="collect-btn" 
+                    :class="{ 'collected': software.collected }"
+                    @click="toggleCollect(software)"
+                    :title="software.collected ? '取消收藏' : '收藏'"
+                >
+                    {{ software.collected ? '★' : '☆' }}
+                </button>
+
+                <font style="font-size: 20px;">
+                    <a :href="software.url" target="_blank"> <b>{{ software.name }}</b></a>
+                </font><br>
+                <span>{{ software.information }}</span>
+            </div>
+        </div>
+    </div>
+
+    <h1 class="subject" id = "subject9">学术资源（国外）</h1>
+    <div class="url_frame" id="foreignAcademicResources">
+        <div class="url" v-for="(software,index) in foreignAcademicResourcesList" :key="index">
+            <div class="ico_frame" style="border-radius: 5px; overflow: hidden;">
+                <img :src="software.iconUrl">
+            </div>
+            <div class="url_text" style="position: relative; padding-right: 30px;">
+                <br>
+                <!-- 收藏按钮 -->
+                <button 
+                    class="collect-btn" 
+                    :class="{ 'collected': software.collected }"
+                    @click="toggleCollect(software)"
+                    :title="software.collected ? '取消收藏' : '收藏'"
+                >
+                    {{ software.collected ? '★' : '☆' }}
+                </button>
+
+                <font style="font-size: 20px;">
+                    <a :href="software.url" target="_blank"> <b>{{ software.name }}</b></a>
+                </font><br>
+                <span>{{ software.information }}</span>
+            </div>
+        </div>
+    </div>
+
+  </div>
+
+
+<script>
+  function updateClock() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('hours').textContent = hours;
+    document.getElementById('minutes').textContent = minutes;
+    document.getElementById('seconds').textContent = seconds;
+  }
+
+  function updateDate() {
+    const now = new Date();
+    const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    const day = days[now.getDay()];
+    const date = now.getDate(); 
+    const month = now.getMonth() + 1; // January is 0, so add 1
+    const year = now.getFullYear();
+    document.getElementById('date').textContent = `${year}年${month}月${date}日 ${day}`;
+  }
+
+  setInterval(updateClock, 1000);
+  setInterval(updateDate, 60000); // Update date every minute
+
+  updateClock(); // Initialize the clock immediately
+  updateDate(); // Initialize the date immediately
+
+  var topDiv = document.getElementById('top');
+
+
+
+
+
+  document.getElementById('searchButton').addEventListener('click', () => {
+      const keyword = document.getElementById('search').value.trim();
+      const urls = document.querySelectorAll('.url'); // 获取所有 .url 元素
+      let found = false;
+
+      urls.forEach(urlDiv => {
+        const textElement = urlDiv.querySelector('.url_text');
+
+        // 清除之前的高亮
+        clearHighlight(textElement);
+
+        if (keyword && textElement.textContent.includes(keyword)) {
+          found = true;
+          highlightText(textElement, keyword);
+
+          // 滚动到匹配的元素
+          urlDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+
+    });
+
+    // 清除高亮函数
+    function clearHighlight(element) {
+      const highlighted = element.querySelectorAll('.highlight');
+      highlighted.forEach(span => {
+        span.replaceWith(span.textContent);
+      });
+    }
+
+    // 高亮文本函数
+    function highlightText(element, keyword) {
+      const regex = new RegExp(`(${keyword})`, 'gi');
+      element.childNodes.forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE && regex.test(node.nodeValue)) {
+          const highlightedFragment = document.createDocumentFragment();
+          const parts = node.nodeValue.split(regex);
+
+          parts.forEach(part => {
+            if (regex.test(part)) {
+              const highlightSpan = document.createElement('span');
+              highlightSpan.className = 'highlight';
+              highlightSpan.textContent = part;
+              highlightedFragment.appendChild(highlightSpan);
+            } else {
+              highlightedFragment.appendChild(document.createTextNode(part));
+            }
+          });
+
+          node.replaceWith(highlightedFragment);
+        }
+      });
+    }
+
+
+</script>
+
+<script>
+ // 检测设备类型
+ function isMobile() {
+      return /Mobi|Android/i.test(navigator.userAgent);
+    }
+
+    // 根据页面宽度动态调整 .content 的 margin-left
+    function adjustContentMargin() {
+      const content = document.querySelector('.content');
+      if (window.innerWidth < 1200) { // 当宽度小于1200时
+        content.style.marginLeft = '20px'; /* 将左边距设置为20px */
+        content.style.maxWidth = 'calc(100% - 40px)'; /* 调整最大宽度 */
+      } else {
+        content.style.marginLeft = '250px'; /* 默认左边距为250px */
+        content.style.maxWidth = 'calc(100% - 250px)'; /* 默认最大宽度 */
+      }
+    }
+
+    // 根据设备类型和页面宽度调整导航栏显示
+    function adjustSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      if (isMobile() || window.innerWidth < 1200) { // 移动端或页面宽度小于 1200 像素时隐藏导航栏
+        sidebar.style.display = 'none';
+      } else {
+        sidebar.style.display = 'block';
+      }
+    }
+
+    // 根据设备类型和页面宽度动态调整时钟容器显示
+    function adjustClockVisibility() {
+      const clockContainer = document.getElementById('clock-container');
+      if (isMobile() || window.innerWidth < 1200) { // 移动端或页面宽度小于 1200 像素时隐藏时钟容器
+        clockContainer.style.display = 'none';
+      } else {
+        clockContainer.style.display = 'block';
+      }
+    }
+
+    // 动态调整 .url 元素的排布方式
+    function adjustUrlLayout() {
+      const urlElements = document.querySelectorAll('.url');
+      if (isMobile()) {
+        urlElements.forEach(url => {
+          url.style.width = 'calc(50% - 10px)'; // 每个元素占50%宽度
+        });
+      } else {
+        urlElements.forEach(url => {
+          url.style.width = 'calc(25% - 10px)'; // 每个元素占25%宽度
+        });
+      }
+    }
+
+    // 页面加载时调整内容样式、导航栏显示、时钟容器显示和 URL 布局
+    window.addEventListener('load', () => {
+      adjustSidebar();
+      adjustContentMargin();
+      adjustClockVisibility(); // 调整时钟容器显示
+      adjustUrlLayout(); // 调整 URL 布局
+    });
+
+    // 监听窗口大小变化，动态调整内容样式、导航栏显示、时钟容器显示和 URL 布局
+    window.addEventListener('resize', () => {
+      adjustSidebar();
+      adjustContentMargin();
+      adjustClockVisibility(); // 调整时钟容器显示
+      adjustUrlLayout(); // 调整 URL 布局
+      
+
+    });
+
+
+</script>   
+
+<!-- 这段不要动，屎山会崩塌 -->
+<script> 
+let currentIndex = 0;
+
+function toggleTheme() {
+  const isDark = document.getElementById('theme').checked;
+  const textElements = document.querySelectorAll('.url_text, .url_text a');
+
+  document.body.classList.toggle('night-mode', isDark);
+  document.body.classList.toggle('day-mode', !isDark);
+  
+  // 直接修改文字颜色
+  textElements.forEach(el => {
+    el.style.color = isDark ? '#fff' : '#000';
+  });
+}
+
+// 搜索功能
+function performSearch() {
+  const keyword = document.getElementById('search').value.trim().toLowerCase();
+  const urls = document.querySelectorAll('.url');
+  const matchingUrls = [];
+
+  urls.forEach(urlDiv => {
+    // 清除之前的高亮
+    urlDiv.classList.remove('highlight');
+    
+    if (!keyword) return;
+    
+    // 检查是否匹配关键词
+    const text = urlDiv.textContent.toLowerCase();
+    if (text.includes(keyword)) {
+      urlDiv.classList.add('highlight');
+      matchingUrls.push(urlDiv);
+    }
+  });
+
+  // 滚动到第一个匹配项
+  if (matchingUrls.length) {
+    currentIndex = 0;
+    matchingUrls[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+// 搜索结果导航
+function navigateHighlights(direction) {
+  const highlights = document.querySelectorAll('.url.highlight');
+  if (!highlights.length) return;
+  
+  currentIndex = (currentIndex + direction + highlights.length) % highlights.length;
+  highlights[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', () => {
+  // 绑定主题切换事件
+  document.getElementById('theme').addEventListener('change', toggleTheme);
+  
+  // 初始化主题
+  toggleTheme();
+  
+  // 绑定搜索事件
+  const searchInput = document.getElementById('search');
+  const searchButton = document.getElementById('searchButton');
+  
+  searchButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    performSearch();
+  });
+  
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      performSearch();
+    }
+  });
+  
+  // 绑定导航按钮事件
+  document.getElementById('nextButton').addEventListener('click', () => navigateHighlights(1));
+  document.getElementById('prevButton').addEventListener('click', () => navigateHighlights(-1));
+});
+</script>
+    
+
+<script>
+    axios.interceptors.request.use(
+      (config) => {
+        const token = localStorage.getItem("token");
+        if (token) {
+          config.headers["Authorization"] = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
+
+
+
+const { createApp, ref, onMounted } = Vue;
+
+createApp({
+  setup() {
+    // ========================= 1. 数据定义（所有列表的ref）=========================
+    const commonSoftwareList = ref([]); // 原有：常用软件
+    const lifeToolList = ref([]); // 原有：生活工具
+    const examInformationList = ref([]); // 新增：考试信息
+    const graduateStudentInformationList = ref([]); // 新增：研究生信息
+    const practiceInformationList = ref([]); // 新增：实习信息
+    const competitionInformationList = ref([]); // 新增：竞赛信息
+    const domesticAcademicResourcesList = ref([]); // 新增：国内学术资源
+    const foreignAcademicResourcesList = ref([]); // 新增：国外学术资源
+
+
+    const selectCommonSoftware = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/common_software");
+        commonSoftwareList.value = res.data.data || [];
+      } catch (err) {
+        console.error("请求常用软件列表失败", err);
+      }
+    };
+
+    // 原有：获取生活工具
+    const selectLifeTool = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/life_tool");
+        lifeToolList.value = res.data.data || [];
+      } catch (err) {
+        console.error("请求生活工具列表失败", err);
+      }
+    };
+
+    // 新增：获取考试信息
+    const selectExamInformation = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/exam_information");
+        examInformationList.value = res.data.data || [];
+      } catch (err) {
+        console.error("请求考试信息列表失败", err);
+      }
+    };
+
+    // 新增：获取研究生信息
+    const selectGraduateStudentInformation = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/graduate_student_information");
+        graduateStudentInformationList.value = res.data.data || [];
+      } catch (err) {
+        console.error("请求研究生信息列表失败", err);
+      }
+    };
+
+    // 新增：获取实习信息
+    const selectPracticeInformation = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/practice_information");
+        practiceInformationList.value = res.data.data || [];
+      } catch (err) {
+        console.error("请求实习信息列表失败", err);
+      }
+    };
+
+    // 新增：获取竞赛信息
+    const selectCompetitionInformation = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/competition_information");
+        competitionInformationList.value = res.data.data || [];
+      } catch (err) {
+        console.error("请求竞赛信息列表失败", err);
+      }
+    };
+
+    // 新增：获取国内学术资源
+    const selectDomesticAcademicResources = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/domestic_academic_resources");
+        domesticAcademicResourcesList.value = res.data.data || [];
+      } catch (err) {
+        console.error("请求国内学术资源列表失败", err);
+      }
+    };
+
+    // 新增：获取国外学术资源
+    const selectForeignAcademicResources = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/foreign_academic_resources");
+        foreignAcademicResourcesList.value = res.data.data || [];
+      } catch (err) {
+        console.error("请求国外学术资源列表失败", err);
+      }
+    };
+
+    // ========================= 3. 通用：获取收藏列表并标记所有列表的收藏状态 =========================
+    const fetchFavourites = async () => {
+      try {
+        // 1. 获取当前用户ID
+        const userRes = await axios.get("http://localhost:8080/api/userInfo");
+        const userId = userRes.data.data.id;
+        if (!userId) throw new Error("未获取到用户ID");
+
+        // 2. 获取用户的所有收藏
+        const favRes = await axios.get(`http://localhost:8080/api/getFavourite?userId=${userId}`);
+        const favourites = favRes.data.data || [];
+
+        // 3. 标记所有列表的“已收藏”状态（核心：遍历每个列表的每一项）
+        const allLists = [
+          commonSoftwareList.value,
+          lifeToolList.value,
+          examInformationList.value,
+          graduateStudentInformationList.value,
+          practiceInformationList.value,
+          competitionInformationList.value,
+          domesticAcademicResourcesList.value,
+          foreignAcademicResourcesList.value
+        ];
+
+        allLists.forEach(list => {
+          list.forEach(item => {
+            // 用“name”匹配收藏（若有唯一ID，建议用ID匹配更准确）
+            item.collected = favourites.some(fav => fav.name === item.name);
+          });
+        });
+      } catch (err) {
+        console.error("标记收藏状态失败", err);
+      }
+    };
+
+    // ========================= 4. 通用：收藏/取消收藏（所有列表共用） =========================
+    const toggleCollect = async (item) => {
+      try {
+        // 1. 获取用户ID
+        const userRes = await axios.get("http://localhost:8080/api/userInfo");
+        const userId = userRes.data.data.id;
+        if (!userId) throw new Error("未获取到用户ID");
+
+        // 2. 构造请求数据（所有列表的item结构一致，可通用）
+        const collectData = {
+          userId,
+          name: item.name,
+          iconUrl: item.iconUrl,
+          url: item.url,
+          information: item.information
+        };
+
+        // 3. 区分“收藏”和“取消收藏”
+        if (!item.collected) {
+          await axios.post("http://localhost:8080/api/addFavourite", collectData);
+        } else {
+          await axios.post("http://localhost:8080/api/removeFavourite", collectData);
+        }
+
+        // 4. 即时更新UI状态（无需重新请求接口）
+        item.collected = !item.collected;
+      } catch (err) {
+        console.error("收藏操作失败", err);
+      }
+    };
+
+    onMounted(async () => {
+      // 并行获取所有列表数据（比串行加载更快）
+      await Promise.all([
+        selectCommonSoftware(),
+        selectLifeTool(),
+        selectExamInformation(),
+        selectGraduateStudentInformation(),
+        selectPracticeInformation(),
+        selectCompetitionInformation(),
+        selectDomesticAcademicResources(),
+        selectForeignAcademicResources()
+      ]);
+
+      // 所有数据加载完成后，标记收藏状态
+      await fetchFavourites();
+    });
+    return {
+      // 所有列表数据
+      commonSoftwareList,
+      lifeToolList,
+      examInformationList,
+      graduateStudentInformationList,
+      practiceInformationList,
+      competitionInformationList,
+      domesticAcademicResourcesList,
+      foreignAcademicResourcesList,
+      // 通用方法
+      toggleCollect
+    };
+  }
+}).mount('#app'); // 所有列表都挂载到同一个根容器
+  
+
+
+
+</script>
+
+
+<script>
+// 设置token
+
+
+(function() {
+  // 设置Axios拦截器 - 自动携带token
+  axios.interceptors.request.use(config => {
+    const token = localStorage.getItem('token');
+    // console.log(token)
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
+
+  // 处理响应拦截 - 处理未授权情况
+  axios.interceptors.response.use(response => {
+    return response;
+  }, error => {
+    // 处理401未授权错误
+    if (error.response && error.response.status === 401) {
+      // 清除token并跳转登录页
+      localStorage.removeItem('token');
+      if (!window.location.pathname.includes('login.html')) {
+        window.location.href = 'login.html';
+      }
+    }
+    return Promise.reject(error);
+  });
+
+  // 页面加载时执行的函数
+  async function initPage() {
+    try {
+      const token = localStorage.getItem('token');
+      
+      // 如果没有token且不是登录页，跳转到登录页
+      if (!token && !window.location.pathname.includes('login.html')) {
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // 如果有token且不是登录页，获取用户信息
+      if (token && !window.location.pathname.includes('login.html')) {
+        const response = await axios.get('http://localhost:8080/api/userInfo');
+        if (response.data.code === 1) {
+          const admin = document.getElementById("admin")
+          // console.log(response.data.data.administrator)
+          if (response.data.data.administrator == 1) {
+            admin.style.display = 'block';
+          } else {
+            admin.style.display = 'none';
+          }
+
+          displayUserInfo(response.data.data);
+        }
+      }
+    } catch (error) {
+      console.error('初始化页面失败:', error);
+    }
+  }
+
+  // 显示用户信息
+  function displayUserInfo(userData) {
+    const userNameElement = document.getElementById('user_name');
+
+    if (userNameElement && userData) {
+      userNameElement.textContent = userData.username; 
+
+    }
+  }
+
+  window.logout = function() {
+    axios.post('http://localhost:8080/api/logout')
+      .finally(() => {
+        // 无论请求是否成功，都清除本地存储并跳转
+        localStorage.removeItem('token');
+        window.location.href = 'login.html';
+      });
+  }
+
+
+
+  document.addEventListener('DOMContentLoaded', initPage);
+})();
+
+
+</script>
+
+<script>
+// <div id="user_menu" class="user-menu">
+//   <h1 class="user-menu__title">
+//     当前用户：<span id="user_name" class="user-menu__name"></span>
+//   </h1>
+//   <button onclick="logout()" id="logoutButton" class="user-menu__btn">退出登录</button>
+//   <a href="changePersonal.html" class="user-menu__link">修改个人信息</a>
+// </div>
+
+
+  const menu = document.getElementById("menu");
+  const user_menu = document.getElementById("user_menu")
+
+  menu.addEventListener("click", function() {
+    console.log("点击了")
+    if (user_menu.classList.contains("active")) {
+      user_menu.classList.remove("active");
+    } else {
+      user_menu.classList.add("active");
+    }
+  })
+</script>
+
+
+</body>
+</html>

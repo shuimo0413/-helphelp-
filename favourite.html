@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的收藏列表</title>
+    <link rel="stylesheet" href="css/css.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.8/dist/axios.min.js"></script>
+    <style>
+        /* 全局样式重置与基础设置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #F2F2F2; /* 全局灰白色背景 */
+            padding: 90px 20px;
+        }
+
+        /* 主容器样式 */
+        #app {
+            
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* 轻微阴影增强层次 */
+            padding: 30px;
+        }
+
+        /* 表单样式（去掉默认边框） */
+        form {
+            width: 100%;
+        }
+
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        /* 表头样式 */
+        table thead {
+            background-color: #F2F2F2; /* 表头灰白色背景 */
+        }
+
+        table th {
+            padding: 14px 20px;
+            text-align: left;
+            font-size: 15px;
+            color: #333;
+            font-weight: 600;
+            border-bottom: 2px solid #eee;
+        }
+
+        /* 表格内容行样式 */
+        table tbody tr {
+            transition: background-color 0.3s ease; /*  hover过渡效果 */
+        }
+
+        table tbody tr:hover {
+            background-color: #f9f9f9; /* 行hover浅灰背景 */
+        }
+
+        table td {
+            padding: 18px 20px;
+            color: #666;
+            font-size: 14px;
+            border-bottom: 1px solid #eee; /* 行底分隔线 */
+            vertical-align: middle; /* 内容垂直居中 */
+        }
+
+        /* 图标样式 */
+        table td img {
+            border-radius: 8px; /* 图标圆角，更柔和 */
+            object-fit: cover; /* 防止图标拉伸变形 */
+        }
+
+        /* 链接样式 */
+        table td a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        table td a:hover {
+            color: #F2C230; /* 链接hover金色，突出交互 */
+        }
+
+        /* 删除按钮样式 */
+        table td button {
+            background-color: #F2C230; /* 按钮金色主色 */
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        table td button:hover {
+            background-color: #E0B020; /* 按钮hover加深金色 */
+        }
+
+        table td button:active {
+            background-color: #C99E1A; /* 按钮点击时更深色 */
+        }
+
+        /* 空状态提示（收藏为空时显示） */
+        .empty-tip {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-size: 15px;
+        }
+
+        .empty-tip p {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 顶部导航栏 -->
+<nav style="background-color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 0 20px; position: fixed; top: 0; left: 0; right: 0; z-index: 100;">
+    <div style="max-width: 1200px; margin: 0 auto; height: 60px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="font-size: 18px; font-weight: 600;"><a href="index.html" style="text-decoration: none; color: #F2C230;">返回首页</a></div>
+        <div style="display: flex; gap: 30px;">
+            <a href="favourite.html" style="color: #F2C230; text-decoration: none; font-weight: 500;">我的收藏</a>
+            <a href="changePersonal.html" style="color: #666; text-decoration: none; font-weight: 500;">修改信息</a>
+            <a href="feedback.html" style="color: #666; text-decoration: none; font-weight: 500;">用户反馈</a>
+        </div>
+    </div>
+</nav>
+<!-- 用于抵消固定导航栏的高度 -->
+<div style="height: 60px;"></div>
+
+
+    <div id="app">
+        <!-- 收藏列表标题 -->
+        <h2 style="color: #333; margin-bottom: 20px; font-weight: 600;">我的收藏</h2>
+        
+        <form action="">
+            <table>
+                <!-- 表头 -->
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">图标</th>
+                        <th style="width: 200px;">名称</th>
+                        <th>描述</th>
+                        <th style="width: 120px;">操作</th>
+                    </tr>
+                </thead>
+                <!-- 收藏内容 -->
+                <tbody>
+                    <!-- 有收藏时显示 -->
+                    <tr v-for="(item, index) in favourite" :key="index">
+                        <td><img :src="item.iconUrl" width="50px" height="50px" alt="收藏图标"></td>
+                        <td><a :href="item.url" target="_blank">{{ item.name }}</a></td>
+                        <td>{{ item.information || '无描述' }}</td> <!-- 空描述时显示默认文本 -->
+                        <td><button @click="removeFavourite(item)" type="button">删除</button></td>
+                    </tr>
+                    <!-- 无收藏时显示空状态 -->
+                    <tr v-if="favourite.length === 0">
+                        <td colspan="4" class="empty-tip">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                            <p>暂无收藏，快去添加吧～</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+    <script>
+        axios.interceptors.request.use(
+        (config) => {
+            const token = localStorage.getItem("token");
+            if (token) {
+            config.headers["Authorization"] = `Bearer ${token}`;
+            }else{
+                window.location.href = 'login.html';
+            }
+            return config;
+        },
+        (error) => {
+            window.location.href = 'login.html';
+            return Promise.reject(error);
+        }
+        );
+
+        const { createApp, ref, onMounted } = Vue;
+        createApp({
+            setup() {
+                const favourite = ref([]);
+                let userId = '';
+                const user = ref({}); // 用ref存储用户信息，确保响应式
+
+                // 获取用户信息
+                const getUserDataByToken = async () => {
+                    try {
+                        const response = await axios.get("http://localhost:8080/api/userInfo");
+                        userId = response.data.data.id;
+                        user.value = response.data.data; // 赋值给ref的value
+                        console.log("用户信息:", user.value);
+                    } catch (err) {
+                        console.log("获取用户信息出错:", err);
+                    }
+                };
+
+                // 获取收藏列表（参数id未使用，可移除）
+                const getFavourite = async () => {
+                    try {
+                        const response = await axios.get("http://localhost:8080/api/getFavourite", { 
+                            params: { userId } 
+                        });
+                        favourite.value = response.data.data || []; // 空数据时设为数组，避免报错
+                        console.log("收藏列表:", favourite.value);
+                    } catch (error) {
+                        console.error("获取收藏失败:", error);
+                        favourite.value = []; // 失败时重置为空数组
+                    }
+                };
+
+                // 删除收藏
+                const removeFavourite = async (object) => {
+                    // 确认删除（增强用户体验，防止误删）
+                    if (!confirm(`确定要删除收藏「${object.name || '未知项目'}」吗？`)) {
+                        return;
+                    }
+
+                    try {
+                        await axios.post("http://localhost:8080/api/removeFavourite", {
+                            userId: userId,
+                            url: object.url
+                        });
+                        alert("删除成功！");
+                        getFavourite(); // 刷新收藏列表
+                    } catch (err) {
+                        console.log("删除出错:", err);
+                        alert("删除失败，请重试～");
+                    }
+                };
+
+                // 页面加载时执行
+                onMounted(async () => {
+                    await getUserDataByToken();
+                    await getFavourite();
+                });
+
+                return {
+                    favourite,
+                    userId,
+                    user,
+                    removeFavourite
+                };
+            },
+        }).mount("#app");
+    </script>
+</body>
+</html>

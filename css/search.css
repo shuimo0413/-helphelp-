@@ -1,0 +1,8 @@
+#search_frame{
+    width: 600px;
+    height: 100px;
+    top: 40px   ;
+}
+#search{
+    box-shadow: 4px 4px 2px #fff4e9;
+}

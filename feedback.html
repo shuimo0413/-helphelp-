@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户反馈页</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="css/css.css">
+    <style>
+        /* 全局样式重置与基础设置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #F2F2F2; /* 页面灰白色背景 */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* 反馈表单容器 */
+        #app {
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+        }
+
+        /* 标题样式 */
+        #app h1 {
+            color: #333;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        #app h1::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background-color: #F2C230; /* 金色下划线强调 */
+            margin: 8px auto 0;
+            border-radius: 2px;
+        }
+
+        #app p {
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        /* 表单分组样式 */
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group h2 {
+            color: #444;
+            font-size: 16px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        /* 输入框与文本域样式 */
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #F2C230; /* 聚焦时金色边框 */
+            box-shadow: 0 0 0 3px rgba(242, 194, 48, 0.15); /* 金色外发光 */
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        /* 提交按钮样式 */
+        button[type="submit"] {
+            width: 100%;
+            background-color: #F2C230; /* 金色按钮 */
+            color: #333;
+            border: none;
+            border-radius: 6px;
+            padding: 14px 0;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #e0b020; /*  hover时加深金色 */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(242, 194, 48, 0.2);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(242, 194, 48, 0.2);
+        }
+
+        /* 结果提示信息样式 */
+        .result-msg {
+            margin-top: 18px;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        /* 成功/错误提示区分样式 */
+        .result-msg.success {
+            background-color: rgba(72, 187, 120, 0.1);
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .result-msg.error {
+            background-color: rgba(229, 115, 115, 0.1);
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav style="background-color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 0 20px; position: fixed; top: 0; left: 0; right: 0; z-index: 100;">
+        <div style="max-width: 1200px; margin: 0 auto; height: 60px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="font-size: 18px; font-weight: 600;"><a href="index.html" style="text-decoration: none; color: #F2C230;">返回首页</a></div>
+            <div style="display: flex; gap: 30px;">
+                <a href="favourite.html" style="color: #666; text-decoration: none; font-weight: 500;">我的收藏</a>
+                <a href="changePersonal.html" style="color: #666; text-decoration: none; font-weight: 500;">修改信息</a>
+                <a href="feedback.html" style="color: #F2C230; text-decoration: none; font-weight: 500;">用户反馈</a>
+            </div>
+        </div>
+    </nav>
+    <!-- 用于抵消固定导航栏的高度 -->
+    <div style="height: 60px;"></div>
+
+
+    <div id="app">
+        <form @submit.prevent="submitFeedback">
+            <h1>用户反馈</h1>
+            <p>欢迎提出您的宝贵意见，我们会持续优化服务体验</p>
+            
+            <!-- 用户名输入组 -->
+            <div class="form-group">
+                <h2>名称</h2>
+                <input 
+                    type="text" 
+                    v-model="feedback.name" 
+                    placeholder="请输入您的名称"
+                >
+            </div>
+
+            <!-- 邮箱输入组 -->
+            <div class="form-group">
+                <h2>邮箱</h2>
+                <input 
+                    type="email" 
+                    v-model="feedback.email" 
+                    placeholder="请输入您的联系邮箱"
+                >
+            </div>
+
+            <!-- 反馈内容输入组 -->
+            <div class="form-group">
+                <h2>反馈内容</h2>
+                <textarea 
+                    v-model="feedback.content" 
+                    placeholder="请详细描述您的反馈（如问题、建议等）"
+                ></textarea>
+            </div>
+
+            <!-- 提交按钮 -->
+            <button type="submit">提交反馈</button>
+
+            <!-- 结果提示（带样式区分成功/错误） -->
+            <p 
+                v-if="resultMsg" 
+                class="result-msg"
+                :class="resultMsg.includes('成功') ? 'success' : 'error'"
+            >
+                {{ resultMsg }}
+            </p>
+        </form>
+    </div>
+
+    <script> 
+
+        axios.interceptors.request.use(
+        (config) => {
+            const token = localStorage.getItem("token");
+            if (token) {
+            config.headers["Authorization"] = `Bearer ${token}`;
+            }else{
+                window.location.href = 'login.html';
+            }
+            return config;
+        },
+        (error) => {
+            window.location.href = 'login.html';
+            return Promise.reject(error);
+        }
+        );
+
+        // 未登录跳转（修复原代码中this指向window的问题）
+        if (!token) {
+            // 先创建临时提示元素，避免Vue实例未挂载时无法操作resultMsg
+            const tempMsg = document.createElement('p');
+            tempMsg.style.position = 'fixed';
+            tempMsg.style.top = '20px';
+            tempMsg.style.left = '50%';
+            tempMsg.style.transform = 'translateX(-50%)';
+            tempMsg.style.padding = '10px 20px';
+            tempMsg.style.backgroundColor = '#ffcdd2';
+            tempMsg.style.color = '#c62828';
+            tempMsg.style.borderRadius = '4px';
+            tempMsg.textContent = '请先登录';
+            document.body.appendChild(tempMsg);
+            
+            // 延迟跳转，让用户看到提示
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 1500);
+        }
+
+        const app = Vue.createApp({
+            data() {
+                return {
+                    feedback: {
+                        name: '',
+                        email: '',
+                        content: ''
+                    },
+                    resultMsg: ''
+                }
+            },
+
+            methods: {
+                async submitFeedback() {
+                    // 表单验证（优化提示文案）
+                    if (!this.feedback.name.trim()) {
+                        this.resultMsg = "请输入您的用户名";
+                        return;
+                    }
+                    if (!this.feedback.email.trim()) {
+                        this.resultMsg = "请输入您的联系邮箱";
+                        return;
+                    }
+                    // 简单邮箱格式验证
+                    const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailReg.test(this.feedback.email.trim())) {
+                        this.resultMsg = "请输入有效的邮箱地址（如：xxx@xxx.com）";
+                        return;
+                    }
+                    if (!this.feedback.content.trim()) {
+                        this.resultMsg = "请详细描述您的反馈内容";
+                        return;
+                    }
+
+                    // 获取用户ID
+                    let userId = null;
+                    try {
+                        const userRes = await axios.get("http://localhost:8080/api/userInfo", {
+                            headers: {
+                                "Authorization": "Bearer " + token
+                            }
+                        });
+                        userId = userRes.data.data.id;
+                        console.log("当前用户ID:", userId);
+                    } catch (err) {
+                        this.resultMsg = "获取用户信息失败：" + (err.response?.data?.msg || err.message);
+                        return;
+                    }
+
+                    // 提交反馈
+                    try {
+                        await axios.post("http://localhost:8080/api/feedback", {
+                            ...this.feedback,
+                            id: userId // 与后端字段保持一致
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + token,
+                                "Content-Type": "application/json" // 明确请求格式
+                            }
+                        });
+                        this.resultMsg = "反馈提交成功！感谢您的宝贵意见";
+                        // 清空表单
+                        this.feedback = {
+                            name: '',
+                            email: '',
+                            content: ''
+                        };
+                        // 3秒后自动清除成功提示
+                        setTimeout(() => {
+                            this.resultMsg = '';
+                        }, 3000);
+                    } catch (err) {
+                        this.resultMsg = "反馈提交失败：" + (err.response?.data?.msg || err.message);
+                    }
+                }
+            }
+        });
+        app.mount("#app");
+    </script>
+</body>
+</html>

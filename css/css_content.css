@@ -1,0 +1,20 @@
+.content {
+    position: relative;
+    margin-top: 40px;
+    margin-left: 250px;
+    padding: 20px;
+    /* background: #abadad; 半透明背景，可以根据需要调整透明度 */
+    backdrop-filter: blur(0px); 
+    max-width: calc(100% - 250px); /* 最大宽度为页面宽度减去左侧的250px */
+    box-sizing: border-box; /* 确保内边距和边框包含在总宽度内 */
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .content {
+        margin-left: 20px; /* 移动端时调整 margin-left */
+        max-width: calc(100% - 40px); /* 调整最大宽度，留出左右的空隙 */
+    }
+}
+
+

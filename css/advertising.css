@@ -1,0 +1,31 @@
+#advertising{
+    position: relative;
+    /* 关于centent居中 */
+    top: 10px;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    width: 500px;
+    height: 300px;
+    background-color: #ffffff;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background-image: url("./img/ae5f932b097616fe46e721468f471efb.png");
+    background-size: 100%;
+}
+#close_advertising{
+    border-radius: 4px;
+    text-align: center;
+
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    background-color: #B5C4DE;
+}
+#close_advertising:hover{
+    background-color:  #718096;
+}

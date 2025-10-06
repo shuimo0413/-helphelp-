@@ -1,0 +1,18 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  width: 100%; /* 确保body元素占满整个视口宽度 */
+  height: 100%; /* 确保body元素占满整个视口高度 */
+  --color: #E1E1E1; /* 定义一个自定义属性用于渐变 */
+  background-color: #F3F3F3; 
+  background-image: 
+    linear-gradient(0deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%, transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%),
+    linear-gradient(90deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%, transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%);
+  background-size: 55px 55px;
+  background-position: center; /* 背景图片居中显示 */
+  background-attachment: fixed; 
+}
+
+
